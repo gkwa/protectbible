@@ -3,19 +3,9 @@ import { Construct } from 'constructs';
 import { aws_ec2 as ec2 } from 'aws-cdk-lib';
 import * as cdk from 'aws-cdk-lib';
 
-export class CdkTestStack extends Stack {
+export class ProtectbibleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-
-    // // Create new VPC with 2 Subnets
-    // const vpc = new ec2.Vpc(this, 'VPC', {
-    //   natGateways: 0,
-    //   subnetConfiguration: [{
-    //     cidrMask: 24,
-    //     name: "myvpc",
-    //     subnetType: ec2.SubnetType.PUBLIC
-    //   }]
-    // });
 
     const vpc = new ec2.Vpc(this, 'my-cdk-vpc', {
       cidr: '10.0.0.0/16',
@@ -40,18 +30,11 @@ export class CdkTestStack extends Stack {
       ],
     });
 
-    // const subnet1 = vpc.selectSubnets({subnetType: ec2.SubnetType.PUBLIC})
-
-    // const cfnNetworkInterface = new ec2.CfnNetworkInterface(this, 'MyCfnNetworkInterface', {
-    //   subnetId: subnet1.subnetIds[0],
-    //   interfaceType: 'efa',
-    // });
-
     const subnetId = vpc.privateSubnets[0].subnetId;
 
     const eni = new ec2.CfnNetworkInterface(this, 'ENI', {
       subnetId,
-      interfaceType: 'efa',
+      // interfaceType: 'efa',
     })
 
     const instance = new ec2.Instance(this, 'Instance', {
@@ -62,7 +45,7 @@ export class CdkTestStack extends Stack {
           availabilityZone: vpc.privateSubnets[0].availabilityZone,
         })]
       },
-      instanceType: new ec2.InstanceType('t3.micro'),
+      instanceType: new ec2.InstanceType('c5.9xlarge'),
       machineImage: new ec2.AmazonLinuxImage({
         generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
       }),
