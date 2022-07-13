@@ -34,7 +34,7 @@ export class ProtectbibleStack extends Stack {
 
     const eni = new ec2.CfnNetworkInterface(this, 'ENI', {
       subnetId,
-      // interfaceType: 'efa',
+      interfaceType: 'efa',
     })
 
     const instance = new ec2.Instance(this, 'Instance', {
